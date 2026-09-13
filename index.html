@@ -26,15 +26,17 @@
     }
     
     .datetime-display {
-        text-align: center;
-        font-size: 13px; /* Yazı boyutu küçültüldü */
+        display: flex;
+        justify-content: space-between; /* İçeriği kenarlara yayar */
+        align-items: center;
+        font-size: 13px; 
         font-weight: 700;
         color: #202124;
         background-color: #f1f3f4; 
         border: 1px solid #dadce0;
         border-bottom: none;
-        padding: 3px 0; /* Çerçeve yüksekliği daraltıldı */
-        letter-spacing: 0.5px;
+        padding: 5px 25px; /* Yanlardan biraz boşluk bırakır */
+        letter-spacing: 2px; /* Harfler arası boşluğu artırır */
         text-transform: uppercase;
     }
     
@@ -221,7 +223,11 @@
 </head>
 <body>
   <div class="container">
-    <div class="datetime-display" id="clock"></div>
+    <!-- Tarih ve saat ayrıştırıldı, flexbox ile yayılacak -->
+    <div class="datetime-display">
+        <span id="date-part"></span>
+        <span id="time-part"></span>
+    </div>
 
     <datalist id="oyuncu-listesi">
       <option value="CEY BEY">
@@ -315,7 +321,9 @@
         const now = new Date();
         const dateStr = now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }).toLocaleUpperCase('tr-TR');
         const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        document.getElementById('clock').textContent = `${dateStr} - ${timeStr}`;
+        
+        document.getElementById('date-part').textContent = dateStr;
+        document.getElementById('time-part').textContent = timeStr;
     }
     setInterval(updateClock, 1000);
     updateClock();
