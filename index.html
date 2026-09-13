@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>101 Puan Tablosu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Text:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+        font-family: 'Google Sans Text', sans-serif;
+        margin: 0;
+        padding: 15px 10px;
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .container {
+        width: 100%;
+        max-width: 600px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        padding: 10px;
+        box-sizing: border-box;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+    th, td {
+        border: 1px solid #dadce0;
+        text-align: center;
+        vertical-align: middle;
+        padding: 0;
+        height: 48px;
+    }
+    th {
+        background-color: #e8eaed;
+        height: 40px;
+    }
+
+    th input {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        border: none;
+        background: transparent;
+        text-align: center;
+        font-family: 'Google Sans Text', sans-serif;
+        font-weight: 700;
+        font-size: 20px;
+        color: #202124;
+        text-transform: uppercase;
+        padding: 0 2px; 
+    }
+    th input::placeholder {
+        color: #5f6368;
+        font-weight: 700;
+    }
+
+    th input::-webkit-calendar-picker-indicator {
+        display: none !important;
+    }
+
+    .cell-flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        width: 100%;
+    }
+
+    .score-input {
+        flex-grow: 1;
+        width: 0;
+        height: 100%;
+        box-sizing: border-box;
+        border: none;
+        text-align: center;
+        font-family: 'Google Sans Text', sans-serif;
+        font-size: 26px; 
+        font-weight: 700;
+        background: transparent;
+        color: #202124;
+        padding: 0;
+    }
+    .score-input:focus {
+        outline: none;
+        background-color: #e8f0fe;
+    }
+
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+
+    .ticks-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 26px;
+        height: 100%;
+        border-left: 1px solid #dadce0;
+        background-color: #f8f9fa;
+        gap: 6px;
+    }
+    .ticks-wrapper input[type="checkbox"] {
+        margin: 0;
+        width: 16px;
+        height: 16px;
+        accent-color: #34a853; 
+        cursor: pointer;
+    }
+
+    .total-row td {
+        background-color: #e8eaed;
+        padding: 8px 0; 
+        border-top: 2px solid #dadce0;
+    }
+    
+    .total-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .okey-total {
+        font-size: 16px; 
+        color: #34a853; 
+        font-weight: 700;
+        margin-bottom: 2px; 
+    }
+    
+    .score-total {
+        font-size: 28px; 
+        color: #1a73e8;
+        font-weight: 700;
+        line-height: 1; 
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .btn-action {
+        flex: 1;
+        padding: 16px 10px;
+        color: white;
+        border: none;
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: 'Google Sans Text', sans-serif;
+        transition: background-color 0.2s;
+        text-align: center;
+    }
+
+    .btn-minus {
+        background-color: #5f6368;
+    }
+    .btn-minus:active {
+        background-color: #3c4043;
+    }
+
+    .btn-clear {
+        background-color: #da362f;
+    }
+    .btn-clear:active {
+        background-color: #b32a24;
+    }
+
+    #toast {
+        visibility: hidden;
+        min-width: 250px;
+        background-color: #323232;
+        color: #fff;
+        text-align: center;
+        border-radius: 8px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1000;
+        left: 50%;
+        bottom: 30px;
+        transform: translateX(-50%);
+        font-size: 15px;
+        font-family: 'Google Sans Text', sans-serif;
+        font-weight: 500;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+        opacity: 0;
+        transition: opacity 0.3s, bottom 0.3s, visibility 0.3s;
+    }
+
+    #toast.show {
+        visibility: visible;
+        opacity: 1;
+        bottom: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <datalist id="oyuncu-listesi">
+      <option value="CEY BEY">
+      <option value="ÇAĞDAŞ">
+      <option value="EMRAH">
+      <option value="GÖKHAN">
+      <option value="HACI DAYI">
+      <option value="HAKAN">
+      <option value="İBO DAYI">
+      <option value="MURAT">
+      <option value="ORKUN">
+      <option value="RIDVAN">
+      <option value="SERKAN">
+    </datalist>
+
+    <table>
+      <colgroup>
+        <col style="width: 25%;">
+        <col style="width: 25%;">
+        <col style="width: 25%;">
+        <col style="width: 25%;">
+      </colgroup>
+      <thead>
+        <tr>
+          <th><input type="text" list="oyuncu-listesi" placeholder="İSİM" 
+                onfocus="this.dataset.eski = this.value; this.value = '';" 
+                onblur="if(this.value == '') this.value = this.dataset.eski; saveData();"
+                oninput="saveData()"></th>
+          <th><input type="text" list="oyuncu-listesi" placeholder="İSİM" 
+                onfocus="this.dataset.eski = this.value; this.value = '';" 
+                onblur="if(this.value == '') this.value = this.dataset.eski; saveData();"
+                oninput="saveData()"></th>
+          <th><input type="text" list="oyuncu-listesi" placeholder="İSİM" 
+                onfocus="this.dataset.eski = this.value; this.value = '';" 
+                onblur="if(this.value == '') this.value = this.dataset.eski; saveData();"
+                oninput="saveData()"></th>
+          <th><input type="text" list="oyuncu-listesi" placeholder="İSİM" 
+                onfocus="this.dataset.eski = this.value; this.value = '';" 
+                onblur="if(this.value == '') this.value = this.dataset.eski; saveData();"
+                oninput="saveData()"></th>
+        </tr>
+      </thead>
+      <tbody id="hands">
+        <!-- JS ile 9 satır oluşturulacak -->
+      </tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td>
+             <div class="total-cell">
+                 <div class="okey-total" id="toplam-okey0">0 OKEY</div>
+                 <div class="score-total" id="toplam0">0</div>
+             </div>
+          </td>
+          <td>
+             <div class="total-cell">
+                 <div class="okey-total" id="toplam-okey1">0 OKEY</div>
+                 <div class="score-total" id="toplam1">0</div>
+             </div>
+          </td>
+          <td>
+             <div class="total-cell">
+                 <div class="okey-total" id="toplam-okey2">0 OKEY</div>
+                 <div class="score-total" id="toplam2">0</div>
+             </div>
+          </td>
+          <td>
+             <div class="total-cell">
+                 <div class="okey-total" id="toplam-okey3">0 OKEY</div>
+                 <div class="score-total" id="toplam3">0</div>
+             </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    
+    <div class="action-buttons">
+        <button class="btn-action btn-minus" onclick="toggleActiveSign()">+/- EKSİ YAP</button>
+        <button class="btn-action btn-clear" onclick="clearData()">TÜMÜNÜ TEMİZLE</button>
+    </div>
+  </div>
+
+  <div id="toast">Bir Elde Sadece İki Okey Var</div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbzYllH4CWCLPPXPJxMRc0oa38cu7NcgnDSMnuJbKL2Ush7ScUiuS3EPBIeTjp6cTOro/exec";
+    const tbody = document.getElementById('hands');
+    let lastActiveInput = null;
+    let toastTimeout;
+    
+    for (let i = 1; i <= 9; i++) {
+        let tr = document.createElement('tr');
+        
+        for (let j = 0; j < 4; j++) {
+            let td = document.createElement('td');
+            td.innerHTML = `
+                <div class="cell-flex">
+                    <input type="number" class="score-input" data-col="${j}" oninput="handleInput(this)">
+                    <div class="ticks-wrapper">
+                        <input type="checkbox" class="okey-tick" data-col="${j}" onchange="checkOkeyLimit(this)">
+                        <input type="checkbox" class="okey-tick" data-col="${j}" onchange="checkOkeyLimit(this)">
+                    </div>
+                </div>
+            `;
+            tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.className = "show";
+        
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(function(){ 
+            toast.className = toast.className.replace("show", ""); 
+        }, 3000);
+    }
+
+    function hasIncompleteOkey(targetRow) {
+        let allRows = Array.from(document.querySelectorAll('#hands tr'));
+        let targetIndex = allRows.indexOf(targetRow);
+        
+        for (let i = 0; i < targetIndex; i++) {
+            let checkedCount = allRows[i].querySelectorAll('.okey-tick:checked').length;
+            if (checkedCount === 1) { 
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function handleInput(input) {
+        let row = input.closest('tr');
+        
+        if (hasIncompleteOkey(row)) {
+            input.value = ''; 
+            input.blur(); 
+            showToast("İkinci Okey İşaretlenmedi");
+            return;
+        }
+        
+        calcTotals();
+        saveData();
+    }
+
+    function checkOkeyLimit(checkbox) {
+        let row = checkbox.closest('tr');
+        
+        if (hasIncompleteOkey(row)) {
+            checkbox.checked = false; 
+            showToast("İkinci Okey İşaretlenmedi");
+            return;
+        }
+
+        let checkedCount = row.querySelectorAll('.okey-tick:checked').length;
+        
+        if (checkedCount > 2) {
+            showToast("Bir Elde Sadece İki Okey Var"); 
+            checkbox.checked = false; 
+        } else {
+            calcTotals();
+            saveData();
+        }
+    }
+
+    document.addEventListener('focusin', function(e) {
+        if(e.target && e.target.classList.contains('score-input')) {
+            let row = e.target.closest('tr');
+            
+            if (hasIncompleteOkey(row)) {
+                e.target.blur(); 
+                showToast("İkinci Okey İşaretlenmedi");
+                return;
+            }
+            
+            lastActiveInput = e.target;
+        }
+    });
+
+    function toggleActiveSign() {
+        if (lastActiveInput) {
+            let val = parseInt(lastActiveInput.value);
+            if (!isNaN(val)) {
+                lastActiveInput.value = val * -1;
+                calcTotals();
+                saveData();
+            }
+        }
+    }
+
+    function calcTotals() {
+        let totals = [0, 0, 0, 0];
+        let okeys = [0, 0, 0, 0];
+        
+        const inputs = document.querySelectorAll('tbody .score-input');
+        inputs.forEach(input => {
+            let val = parseInt(input.value);
+            if (!isNaN(val)) {
+                totals[input.getAttribute('data-col')] += val;
+            }
+        });
+        
+        const checkboxes = document.querySelectorAll('tbody .okey-tick');
+        checkboxes.forEach(cb => {
+            if (cb.checked) {
+                okeys[cb.getAttribute('data-col')] += 1;
+            }
+        });
+        
+        for (let i = 0; i < 4; i++) {
+            document.getElementById('toplam' + i).textContent = totals[i];
+            document.getElementById('toplam-okey' + i).textContent = okeys[i] + ' OKEY';
+        }
+    }
+
+    function saveData() {
+        let data = { isimler: [], puanlar: [], tikler: [] };
+        
+        document.querySelectorAll('thead input').forEach(el => data.isimler.push(el.value));
+        document.querySelectorAll('tbody .score-input').forEach(el => data.puanlar.push(el.value));
+        document.querySelectorAll('tbody .okey-tick').forEach(el => data.tikler.push(el.checked));
+        
+        let dataStr = JSON.stringify(data);
+        localStorage.setItem('101OkeyLokal', dataStr); 
+        
+        // CORS hatalarını önlemek için text/plain kullanıyoruz
+        fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8'
+            },
+            body: JSON.stringify({action: 'save', data: dataStr})
+        }).catch(e => console.error("Sunucuya kaydedilemedi:", e));
+    }
+
+    function clearBoardUI() {
+        document.querySelectorAll('input[type="text"], input[type="number"]').forEach(el => el.value = '');
+        document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+        calcTotals();
+    }
+
+    function applyData(parsedData) {
+        let isimInputs = document.querySelectorAll('thead input');
+        let puanInputs = document.querySelectorAll('tbody .score-input');
+        let tikInputs = document.querySelectorAll('tbody .okey-tick');
+        
+        if(parsedData.isimler) parsedData.isimler.forEach((val, i) => { if(isimInputs[i]) isimInputs[i].value = val; });
+        if(parsedData.puanlar) parsedData.puanlar.forEach((val, i) => { if(puanInputs[i]) puanInputs[i].value = val; });
+        if(parsedData.tikler) parsedData.tikler.forEach((val, i) => { if(tikInputs[i]) tikInputs[i].checked = val; });
+        
+        calcTotals();
+    }
+
+    function loadData() {
+        let localData = localStorage.getItem('101OkeyLokal');
+        if (localData) {
+            applyData(JSON.parse(localData));
+        }
+
+        fetch(API_URL)
+            .then(res => res.text())
+            .then(serverData => {
+                if (serverData) {
+                    applyData(JSON.parse(serverData));
+                    localStorage.setItem('101OkeyLokal', serverData); 
+                } else {
+                    clearBoardUI();
+                    localStorage.removeItem('101OkeyLokal');
+                }
+            }).catch(e => console.error("Veri çekilemedi:", e));
+    }
+
+    window.onload = loadData;
+
+    function clearData() {
+        if (confirm("Tablodaki tüm puanlar, isimler ve okeyler SİLİNECEK. Emin misiniz?")) {
+            clearBoardUI(); 
+            localStorage.removeItem('101OkeyLokal');
+            
+            fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify({action: 'clear'})
+            }).catch(e => console.error("Sunucudan silinemedi:", e));
+        }
+    }
+  </script>
+</body>
+</html>
