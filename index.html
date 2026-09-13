@@ -25,17 +25,17 @@
         box-sizing: border-box;
     }
     
-    /* Güncellenmiş Saat/Tarih Başlık Tasarımı */
     .datetime-display {
         text-align: center;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
         color: #202124;
-        background-color: #e8eaed;
+        background-color: #f1f3f4; 
         border: 1px solid #dadce0;
         border-bottom: none;
-        padding: 12px 0;
+        padding: 6px 0; 
         letter-spacing: 0.5px;
+        text-transform: uppercase;
     }
     
     table {
@@ -311,10 +311,9 @@
     let lastActiveInput = null;
     let toastTimeout;
     
-    // Saat ve Tarih Fonksiyonu
     function updateClock() {
         const now = new Date();
-        const dateStr = now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+        const dateStr = now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }).toLocaleUpperCase('tr-TR');
         const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         document.getElementById('clock').textContent = `${dateStr} - ${timeStr}`;
     }
