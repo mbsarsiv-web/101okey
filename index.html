@@ -24,6 +24,14 @@
         padding: 10px;
         box-sizing: border-box;
     }
+    .datetime-display {
+        text-align: center;
+        font-size: 15px;
+        font-weight: 500;
+        color: #5f6368;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+    }
     table {
         width: 100%;
         border-collapse: collapse;
@@ -207,6 +215,8 @@
 </head>
 <body>
   <div class="container">
+    <div class="datetime-display" id="clock"></div>
+
     <datalist id="oyuncu-listesi">
       <option value="CEY BEY">
       <option value="ÇAĞDAŞ">
@@ -295,6 +305,16 @@
     let lastActiveInput = null;
     let toastTimeout;
     
+    // Saat ve Tarih Fonksiyonu
+    function updateClock() {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+        const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('clock').textContent = `${dateStr} - ${timeStr}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
     for (let i = 1; i <= 9; i++) {
         let tr = document.createElement('tr');
         
@@ -432,7 +452,6 @@
         let dataStr = JSON.stringify(data);
         localStorage.setItem('101OkeyLokal', dataStr); 
         
-        // CORS hatalarını önlemek için text/plain kullanıyoruz
         fetch(API_URL, {
             method: 'POST',
             headers: {
